@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQ - Emergency Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fa-solid fa-shield-heart"></i>
+                <h2>Welcome to ResQ</h2>
+                <p>Please identify yourself to proceed.</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="input-label">Email ID</label>
+                    <input type="email" id="inp-email" class="login-input" placeholder="user@example.com" required>
+                    <small style="color: #666; font-size: 0.8rem;">(Use <b>admin@resq.com</b> for Admin View)</small>
+                </div>
+                <div class="form-group">
+                    <label class="input-label">Full Name</label>
+                    <input type="text" id="inp-name" class="login-input" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="input-label">Mobile Number</label>
+                    <input type="tel" id="inp-phone" class="login-input" placeholder="Mobile Number" required>
+                </div>
+                <button type="submit" class="submit-btn">ENTER PLATFORM</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="user-view-container" style="display: none;">
+        <nav class="navbar">
+            <div class="logo"><i class="fa-solid fa-shield-heart"></i> ResQ-Link</div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="user-status"><span class="dot"></span> <span id="user-display-name">User</span></div>
+                <button onclick="logout()" class="btn-logout-small">Logout</button>
+            </div>
+        </nav>
+        <div class="gps-bar" id="gps-status-bar"><i class="fa-solid fa-satellite-dish"></i> <span id="gps-text">Locating...</span></div>
+        <main class="app-container">
+            <div class="content-wrapper">
+                <section class="sos-section">
+                    <div class="sos-wrapper"><button id="sos-btn" class="sos-button">SOS</button>
+                        <div class="sos-waves"></div>
+                    </div>
+                    <p class="sos-instruction">PRESS & HOLD FOR INSTANT HELP</p>
+                </section>
+                <section class="report-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-triangle-exclamation"></i> Report Incident</h3>
+                        </div>
+                        <form id="incident-form">
+                            <label class="input-label">Select Incident Type</label>
+                            <div class="incident-grid">
+                                <input type="radio" name="type" id="acc" value="accident" checked><label for="acc" class="grid-item"><i class="fa-solid fa-car-burst"></i> Accident</label>
+                                <input type="radio" name="type" id="med" value="medical"><label for="med" class="grid-item"><i class="fa-solid fa-truck-medical"></i> Medical</label>
+                                <input type="radio" name="type" id="fire" value="fire"><label for="fire" class="grid-item"><i class="fa-solid fa-fire"></i> Fire</label>
+                                <input type="radio" name="type" id="crime" value="crime"><label for="crime" class="grid-item"><i class="fa-solid fa-handcuffs"></i> Crime</label>
+                            </div>
+                            <div class="form-group">
+                                <label class="input-label">Details</label>
+                                <textarea id="details" rows="3" placeholder="Describe situation..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="input-label">Evidence</label>
+                                <div class="file-upload-wrapper"><input type="file" id="media-upload" hidden><label for="media-upload" class="file-label"><i class="fa-solid fa-camera"></i> Tap to Attach</label></div>
+                            </div>
+                            <button type="submit" class="submit-btn">SEND REPORT</button>
+                        </form>
+                    </div>
+                </section>
+                <section class="status-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> My Reports</h3>
+                        </div>
+                        <div id="user-reports-list">
+                            <p style="color:#888; text-align:center;">No active reports.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="admin-view-container" style="display: none;">
+        <div class="admin-wrapper">
+
+            <div class="overlay" onclick="toggleSidebar()"></div>
+
+            <nav class="sidebar" id="sidebar">
+                <div class="brand">
+                    <i class="fa-solid fa-shield-cat"></i> ResQ Admin
+                    <i class="fa-solid fa-xmark close-btn" onclick="toggleSidebar()"></i>
+                </div>
+
+                <div class="menu-item active" onclick="switchAdminView('dashboard', this)">
+                    <i class="fa-solid fa-tower-broadcast"></i> Live Incidents
+                </div>
+                <div class="menu-item" onclick="switchAdminView('units', this)">
+                    <i class="fa-solid fa-truck-medical"></i> Units Available
+                </div>
+                <div class="menu-item" onclick="switchAdminView('analytics', this)">
+                    <i class="fa-solid fa-chart-pie"></i> Analytics
+                </div>
+
+                <div class="sidebar-footer">
+                    <p>System Online <span class="status-indicator"></span></p>
+                    <button onclick="logout()" class="btn-admin-logout">Logout</button>
+                </div>
+            </nav>
+
+            <main class="main-content">
+                <header class="header">
+                    <div class="header-left">
+                        <button class="menu-toggle" onclick="toggleSidebar()">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <h1 id="page-title">Live Incident Monitor</h1>
+                    </div>
+                    <button onclick="refreshAdminData()" class="btn-refresh">
+                        <i class="fa-solid fa-rotate-right"></i> <span class="hide-mobile">Refresh</span>
+                    </button>
+                </header>
+
+                <div class="content-scrollable">
+                    <div id="view-dashboard" class="view-section">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="stat-total">0</div>
+                                <div class="stat-label">Total Reports</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number red" id="stat-active">0</div>
+                                <div class="stat-label">Active Emergencies</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number green" id="stat-solved">0</div>
+                                <div class="stat-label">Resolved Cases</div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <h3>Incoming Alerts</h3>
+                            <div class="table-responsive">
+                                <table id="reports-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>User</th>
+                                            <th>Phone</th>
+                                            <th>Type</th>
+                                            <th>Details</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="view-units" class="view-section" style="display: none;">
+                        <div class="table-container">
+                            <h3>Emergency Response Units</h3>
+                            <div class="table-responsive">
+                                <table id="units-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Unit ID</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Location</th>
+                                            <th>ETA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="units-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="view-analytics" class="view-section" style="display: none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Incident Types</h3>
+                                <div id="chart-types" class="chart-container"></div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Performance</h3>
+                                <div class="chart-container">
+                                    <p>Avg Response: <strong>8 mins</strong></p>
+                                    <p>Satisfaction: <strong>4.8 / 5.0</strong></p>
+                                    <div class="progress-bg">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
