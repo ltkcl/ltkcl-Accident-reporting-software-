@@ -6,7 +6,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import uploadCloudinary from "../utils/cloudinary.js";
 
 const getUser = asyncHandler(async(req, res) => {
-    const{username,email} = req.body;
+    const{username,email} = req.params;
     const user = await User.findOne({$and :[{username:username},{email:email}]}).select("-email");
     return res.status(200).json(new ApiResponse(200,user,"User fetched successfully"));    
 })
@@ -18,6 +18,7 @@ const status= asyncHandler(async(req, res) => {
 const createUser = asyncHandler(async (req, res) => {
     const { username, email, description, phoneNumber, Incident, location, severity, status } = req.body;
     if (!(username && description && phoneNumber && Incident && location && severity)) {
+        console.log("Missing fields in request body", req.body);
         throw new ApiError(404, "All fields are required");
     }
     
@@ -45,10 +46,11 @@ const createUser = asyncHandler(async (req, res) => {
         description,
         phoneNumber: phoneNum,
         Incident,
-        location: typeof location === 'object' ? `${location.lat},${location.lng}` : location,
+        // location: typeof location === 'object' ? `${location.lat},${location.lng}` : location,
+        location : location,
         severity,
         status: status !== undefined ? status : false,
-        image: imageUrl
+        image: "imageUrl"
     })
     await user.save();
     const createUser = await User.findById(user._id).select("-email");
