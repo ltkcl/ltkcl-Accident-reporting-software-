@@ -11,6 +11,6 @@ userRouter.route('/deleteUser').delete(userController.deleteUser);
 userRouter.route('/updateUser').put(userController.updateUser);
 userRouter.route('/updateStatus').put(userController.updateStatus);
 userRouter.route('/all').get(userController.getAllReports);
-userRouter.route('/phone/:phoneNumber').get(userController.getReportsByPhone);
+userRouter.route('/phone').get(userController.getReportsByPhone);
 
 export default userRouter;

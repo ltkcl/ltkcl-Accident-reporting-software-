@@ -59,7 +59,7 @@ const createUser = asyncHandler(async (req, res) => {
         location : location,
         severity,
         status: status !== undefined ? status : false,
-        image: "imageUrl"
+        image: imageUrl
     })
     await user.save();
     const createUser = await User.findById(user._id).select("-email");
@@ -122,15 +122,15 @@ const getAllReports = asyncHandler(async (req, res) => {
 })
 
 const getReportsByPhone = asyncHandler(async (req, res) => {
-    const { phoneNumber } = req.params;
-    if (!phoneNumber || phoneNumber === "N/A") {
-        return res.status(200).json(new ApiResponse(200, [], "No phone number provided"));
-    }
+    const { phoneNumber } = req.query;    
     const phoneNum = parseInt(phoneNumber);
     if (isNaN(phoneNum)) {
         throw new ApiError(400, "Invalid phone number format");
     }
-    const reports = await User.find({ phoneNumber: phoneNum }).select("-email").sort({ createdAt: -1 });
+    const reports = await User.find({ phoneNumber: phoneNum });
+    if(!reports || reports.length === 0) {
+        throw new ApiError(404, "No reports found for the provided phone number");
+    }
     return res.status(200).json(new ApiResponse(200, reports, "User reports fetched successfully"));
 })
 
