@@ -30,18 +30,18 @@ app.use((req, res, next) => {
 import mainRoutes from "./routes/main.routes.js";
 app.use("/api",mainRoutes);
 
-// Serve frontend HTML files (single page app with user/admin views)
-app.get("/", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-});
+// // Serve frontend HTML files (single page app with user/admin views)
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(frontendPath, "index.html"));
+// });
 
-// Also serve admin route to same file (handled by frontend routing)
-app.get("/admin", (req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-});
+// // Also serve admin route to same file (handled by frontend routing)
+// app.get("/admin", (req, res) => {
+//     res.sendFile(path.join(frontendPath, "index.html"));
+// });
 
-// Error handling middleware (must be last)
-import errorHandler from "./middleware/error.middleware.js";
-app.use(errorHandler);
+// // Error handling middleware (must be last)
+// import errorHandler from "./middleware/error.middleware.js";
+// app.use(errorHandler);
 
 export default app;
