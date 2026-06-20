@@ -9,14 +9,14 @@ import path from "path";
 import { debug } from 'console';
 
 connectDB()
-.then(()=>{
-    const port = process.env.PORT||2000;
-    app.listen(port,()=>{
-        console.log(`Server is listening at the port ${port}`)
-    })
-})
-.catch((err)=>{
-    console.log("Could not connect to the sever ",err);
-})
+// .then(()=>{
+//     const port = process.env.PORT||2000;
+//     app.listen(port,()=>{
+//         console.log(`Server is listening at the port ${port}`)
+//     })
+// })
+// .catch((err)=>{
+//     console.log("Could not connect to the sever ",err);
+// })
 
 export default app;
