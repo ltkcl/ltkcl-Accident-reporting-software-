@@ -6,13 +6,22 @@ import ApiResponse from "../utils/ApiResponse.js";
 import uploadCloudinary from "../utils/cloudinary.js";
 
 const getUser = asyncHandler(async(req, res) => {
-    const{username,email} = req.params;
-    const user = await User.findOne({$and :[{username:username},{email:email}]}).select("-email");
+    console.log("Request body ", req.query);
+    const{username,email} = req.query;
+    
+    const user = await User.findOne({$and :[{username:username},{email:email}]});
+    if(!user){
+        throw new ApiError(404,"The user do not exist");
+    }
+     console.log("User data ", user);
     return res.status(200).json(new ApiResponse(200,user,"User fetched successfully"));    
 })
 const status= asyncHandler(async(req, res) => {
     const{status} = req.body;
-    const user = await User.findOne({status:{$eq:false}}).select("-email");
+    const user = await User.findOne({status:{$eq:false}}).select("-email");   
+     if(!user){
+        throw new ApiError(404,"The user do not exist");
+    }
     return res.status(200).json(new ApiResponse(200,user,"User fetched successfully"));    
 })
 const createUser = asyncHandler(async (req, res) => {
